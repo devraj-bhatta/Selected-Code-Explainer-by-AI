@@ -1,0 +1,197 @@
+{
+  "name": "selected-code-explainer-ai",
+  "displayName": "Selected Code Explainer (AI)",
+  "description": "Explain any selected code snippet in plain English using OpenRouter (Qwen, DeepSeek, Llama, GPT-OSS, and more) — works with every programming language.",
+  "version": "1.0.0",
+  "publisher": "devraj-bhatta",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Education",
+    "Other"
+  ],
+  "keywords": [
+    "openrouter",
+    "ai",
+    "explain code",
+    "code explanation",
+    "documentation",
+    "learning"
+  ],
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#1e1e2e",
+    "theme": "dark"
+  },
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "selectedCodeExplainerByAI.explain",
+        "title": "Explain Selected Code",
+        "category": "AI Explainer",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "selectedCodeExplainerByAI.explainInPanel",
+        "title": "Explain Selected Code (Detailed Panel)",
+        "category": "AI Explainer",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "selectedCodeExplainerByAI.selectModel",
+        "title": "Select AI Model",
+        "category": "AI Explainer",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "selectedCodeExplainerByAI.regenerate",
+        "title": "Regenerate Last Explanation",
+        "category": "AI Explainer",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "selectedCodeExplainerByAI.explain",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "selectedCodeExplainerByAI.explainInPanel",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "selectedCodeExplainerByAI.regenerate",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "selectedCodeExplainerByAI.selectModel"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "selectedCodeExplainerByAI.explain",
+          "when": "editorHasSelection",
+          "group": "9_ai@1"
+        },
+        {
+          "command": "selectedCodeExplainerByAI.explainInPanel",
+          "when": "editorHasSelection",
+          "group": "9_ai@2"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "selectedCodeExplainerByAI.explain",
+          "when": "editorHasSelection",
+          "group": "navigation@1"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "selectedCodeExplainerByAI.explain",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "selectedCodeExplainerByAI.explain",
+        "key": "ctrl+alt+e",
+        "mac": "cmd+alt+e",
+        "when": "editorTextFocus && editorHasSelection"
+      },
+      {
+        "command": "selectedCodeExplainerByAI.explainInPanel",
+        "key": "ctrl+alt+shift+e",
+        "mac": "cmd+alt+shift+e",
+        "when": "editorTextFocus && editorHasSelection"
+      }
+    ],
+    "configuration": {
+      "title": "Selected Code Explainer by AI",
+      "properties": {
+        "selectedCodeExplainerByAI.model": {
+          "type": "string",
+          "default": "openrouter/free",
+          "markdownDescription": "Model ID to use for generating explanations, from [OpenRouter's model catalog](https://openrouter.ai/models). `openrouter/free` auto-routes to whichever free model is currently available — free model slugs change frequently, so this is the most reliable default. If you get a 404, check the current models list."
+        },
+        "selectedCodeExplainerByAI.explanationDetail": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "standard",
+            "detailed"
+          ],
+          "enumDescriptions": [
+            "A short 2-3 sentence summary.",
+            "A clear paragraph explanation with key points.",
+            "An in-depth, line-by-line style breakdown."
+          ],
+          "default": "standard",
+          "description": "How detailed the AI explanation should be."
+        },
+        "selectedCodeExplainerByAI.responseLanguage": {
+          "type": "string",
+          "default": "English",
+          "description": "The natural language the explanation should be written in (e.g. English, Spanish, Hindi, Japanese)."
+        },
+        "selectedCodeExplainerByAI.temperature": {
+          "type": "number",
+          "default": 0.3,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Creativity of the AI response. Lower values (e.g. 0.2) give more focused, deterministic explanations."
+        },
+        "selectedCodeExplainerByAI.maxOutputTokens": {
+          "type": "number",
+          "default": 1024,
+          "minimum": 128,
+          "maximum": 8192,
+          "description": "Maximum length of the generated explanation, in output tokens."
+        },
+        "selectedCodeExplainerByAI.displayMode": {
+          "type": "string",
+          "enum": [
+            "popup",
+            "panel",
+            "notification"
+          ],
+          "enumDescriptions": [
+            "Show a very short, one-sentence explanation in a native hover popup right next to the selected code (recommended).",
+            "Show a fuller explanation in a rich side panel.",
+            "Show explanations as a simple information message."
+          ],
+          "default": "popup",
+          "description": "Where explanations are displayed by default."
+        },
+        "selectedCodeExplainerByAI.includeSelectedCodeInPanel": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the original selected code alongside its explanation in the panel."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.9.2",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devraj-bhatta/Selected-Code-Explainer-by-AI.git"
+  },
+  "license": "MIT"
+}
